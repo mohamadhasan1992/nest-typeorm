@@ -1,21 +1,48 @@
-import { Body, Controller, Get, Param, Post, Query, Patch, Delete, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Patch, Delete, Session, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-dto-user';
 import { UpdateUserDto } from './dtos/update-user-dto';
 import { UsersService } from './users.service';
+import { UserDto } from './dtos/user.dto';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorators';
+import { User } from './users.entity';
+import { AuthGuard } from 'src/guards/auth.guard';
+
 
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
-    constructor(private usersService: UsersService){}
+    constructor(private usersService: UsersService, private authService: AuthService){}
 
-    @Post('/signup')
-    createUser(@Body() body: CreateUserDto){
-        return this.usersService.create(body.email, body.password);
+    @Get('/me')
+    @UseGuards(AuthGuard)
+    getMe(@CurrentUser() user: User){
+        return user;
     }
 
-    @UseInterceptors(ClassSerializerInterceptor)
+    @Post('/signup')
+    async signup(@Body() body: CreateUserDto, @Session() session: any){
+        const user =  await this.authService.signup(body.email, body.password);
+        session.userId = user.id;
+        return user;
+    }
+
+    @Post('/signin')
+    async signin(@Body() body: CreateUserDto, @Session() session: any){
+        const user =  await this.authService.signin(body.email, body.password);
+        session.userId = user.id;
+        return user;
+    }
+
+    @Post('/signout')
+    signout(@Session() session: any){
+        session.userId = null;
+    }
+
     @Get('/:id')
     getOneUser(@Param('id') id: string){
-        return this.usersService.findOne(parseInt(id))
+        return this.usersService.findOne(parseInt(id));
     }
 
     @Get()
@@ -25,7 +52,7 @@ export class UsersController {
 
     @Patch('/:id')
     updateOneUser(@Param('id') id: string, @Body() body: UpdateUserDto){
-        return this.usersService.update(parseInt(id), body)
+        return this.usersService.update(parseInt(id), body);
     }
 
     @Delete("/:id")
