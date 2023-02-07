@@ -8,6 +8,8 @@ import { ReportsModule } from './reports/reports.module';
 import { User } from './users/users.entity';
 import { Reports } from './reports/reports.entity';
 const cookieSession = require('cookie-session');
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 
 @Module({
   imports: [

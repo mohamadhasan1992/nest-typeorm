@@ -29,4 +29,21 @@ describe('Authentication (e2e)', () => {
         expect(email).toEqual(email)
       });
   });
+
+  it('signup user and then get me api', async() => {
+    const email = 'tabrizii@yahoo.com';
+    const res = await request(app.getHttpServer())
+        .post('/auth/signup')
+        .send({email, password: "tabriz123456"})
+        .expect(201);
+        
+    const cookie = res.get('Set-Cookie');
+
+    const {body} = await request(app.getHttpServer())
+        .get('/auth/me')
+        .set('Cookie', cookie)
+        .expect(200);
+        expect(body.email).toEqual(email)
+    });
+
 });
