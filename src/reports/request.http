@@ -1,0 +1,40 @@
+### Auth signin
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
+
+{
+    "email": "bye@yahoo.com",
+    "password": "2536helloWE"
+}
+
+### Auth signin
+POST http://localhost:3000/auth/signin
+Content-Type: application/json
+
+{
+    "email": "bye@yahoo.com",
+    "password": "2536helloWE"
+}
+
+### Reports
+POST http://localhost:3000/reports
+content-type: application/json
+
+{
+    "make": "ikco",
+    "model":"runna plus",
+    "year":2022,
+    "price": 350000,
+    "mileage": 17000,
+    "lat": 0,
+    "lng": 0
+}
+
+
+### approve Reports
+PATCH http://localhost:3000/reports/5
+content-type: application/json
+
+{
+    "approved": true
+}
