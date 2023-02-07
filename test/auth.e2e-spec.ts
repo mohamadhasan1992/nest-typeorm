@@ -5,7 +5,7 @@ import { AppModule } from './../src/app.module';
 
 
 
-describe('AppController (e2e)', () => {
+describe('Authentication (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -17,10 +17,16 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/auth/signup (POST)', () => {
+    const email = 'tabriz@yahoo.com';
     return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .post('/auth/signup')
+      .send({email, password: "tabriz123456"})
+      .expect(201)
+      .then(res => {
+        const {id, email} = res.body;
+        expect(id).toBeDefined();
+        expect(email).toEqual(email)
+      });
   });
 });

@@ -3,11 +3,11 @@ import { CreateUserDto } from './dtos/create-dto-user';
 import { UpdateUserDto } from './dtos/update-user-dto';
 import { UsersService } from './users.service';
 import { UserDto } from './dtos/user.dto';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from '../interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorators';
 import { User } from './users.entity';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 
 @Controller('auth')
