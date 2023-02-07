@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
+import { ConfigModule, ConfigService } from "@nestjs/config"
 import { APP_PIPE } from '@nestjs/core';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import { AppController } from './app.controller';
@@ -8,16 +9,24 @@ import { ReportsModule } from './reports/reports.module';
 import { User } from './users/users.entity';
 import { Reports } from './reports/reports.entity';
 const cookieSession = require('cookie-session');
-import { ConfigModule, ConfigService } from '@nestjs/config';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: [User, Reports],
-      synchronize: true
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `${process.env.NODE_ENV}.env`
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return{
+          type: 'sqlite',
+          database: config.get<string>('DB_NAME'),
+          entities: [User, Reports],
+          synchronize: true
+        }
+      }
     }),
     UsersModule, 
     ReportsModule
@@ -36,11 +45,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 })
 export class AppModule {
   // add global midelware
+  constructor(private configService: ConfigService){}
   configure(consumer: MiddlewareConsumer){
     consumer
       .apply(
         cookieSession({
-          keys: ['tetscookieinput']
+          keys: [this.configService.get<string>('COOKIE_KEY')]
         })
       )
       .forRoutes('*');

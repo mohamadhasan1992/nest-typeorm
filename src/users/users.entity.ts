@@ -19,4 +19,7 @@ export class User{
 
     @Column({default: true})
     admin:boolean
+
+    @Column({default: Date.now()})
+    createdAt: Date
 }

@@ -3,7 +3,7 @@ POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-    "email": "bye@yahoo.com",
+    "email": "goodmorning@yahoo.com",
     "password": "2536helloWE"
 }
 
@@ -22,10 +22,10 @@ content-type: application/json
 
 {
     "make": "ikco",
-    "model":"runna plus",
-    "year":2022,
-    "price": 350000,
-    "mileage": 17000,
+    "model":"Dena plus",
+    "year":2021,
+    "price": 550000,
+    "mileage": 1000,
     "lat": 0,
     "lng": 0
 }
@@ -37,4 +37,12 @@ content-type: application/json
 
 {
     "approved": true
+}
+
+
+### get Reports for a car
+GET http://localhost:3000/reports?make=ikco&model=runna plus&year=2022&lat=0&lng=0&mileage=17000
+content-type: application/json
+
+{
 }
